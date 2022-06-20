@@ -1,24 +1,41 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
-
+import TicketCard from './ticket';
 import Modal from './modal';
 
 import { Grid } from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { GET_ITEMS } from '../graphql/queries/ticket';
+import { ADD_ITEM } from '../graphql/mutations/ticket';
+import { useQuery, useMutation } from '@apollo/client';
 
 export default function Dashboard() {
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemDescription, setNewItemDescription] = useState('');
+
   const [searchTerm, setSearchTerm] = useState('');
   const [isFoundFilter, setIsFoundFilter] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+
+  const [addTicket] = useMutation(ADD_ITEM, {
+    variables: {
+      itemName: newItemName,
+      itemDescription: newItemDescription,
+      itemStatus: 'new',
+    },
+    refetchQueries: [{ query: GET_ITEMS }],
+  });
 
   const handleShowAddModal = () => {
     setShowAddModal(!showAddModal);
   };
 
-  const { loading, data } = useQuery(FETCH_ITEMS);
+  const handleAddTicket = async () => {
+    await addTicket();
+    setShowAddModal(!showAddModal);
+  };
+
+  const { loading, data } = useQuery(GET_ITEMS);
 
   return (
     <>
@@ -40,15 +57,15 @@ export default function Dashboard() {
               <div className='flex flex-row space-x-2'>
                 <button
                   onClick={async () => {
-                    await setIsFoundFilter('found');
+                    await setIsFoundFilter('new');
                   }}
-                  className='p-2 text-white transition ease-in-out bg-gray-500 rounded-lg active:scale-95 hover:scale-105'
+                  className='p-2 text-white transition ease-in-out rounded-lg bg-sky-500 active:scale-95 hover:scale-105'
                 >
                   New
                 </button>
                 <button
                   onClick={async () => {
-                    await setIsFoundFilter('not-found');
+                    await setIsFoundFilter('in-progress');
                   }}
                   className='p-2 text-white transition ease-in-out bg-yellow-500 rounded-lg active:scale-95 hover:scale-105'
                 >
@@ -56,13 +73,15 @@ export default function Dashboard() {
                 </button>
                 <button
                   onClick={async () => {
-                    await setIsFoundFilter('not-found');
+                    await setIsFoundFilter('done');
                   }}
                   className='p-2 text-white transition ease-in-out bg-green-500 rounded-lg active:scale-95 hover:scale-105'
                 >
                   Done
                 </button>
-                {isFoundFilter === 'found' || isFoundFilter === 'not-found' ? (
+                {isFoundFilter === 'new' ||
+                isFoundFilter === 'in-progress' ||
+                isFoundFilter === 'done' ? (
                   <button
                     onClick={async () => {
                       await setIsFoundFilter('');
@@ -88,69 +107,33 @@ export default function Dashboard() {
               <div className='flex flex-col space-y-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:space-y-0 sm:gap-8'>
                 {data &&
                   data.getItems
-                    .filter((item) => {
+                    .filter((ticket) => {
                       if (searchTerm === '') {
-                        return item;
+                        return ticket;
                       } else if (
-                        item.item_name
+                        ticket.item_name
                           .toLowerCase()
                           .includes(searchTerm.toLowerCase())
                       ) {
-                        return item;
+                        return ticket;
                       }
                       return false;
                     })
-                    .filter((item) => {
-                      if (isFoundFilter.toLowerCase() === 'found') {
-                        if (item.item_status) return item;
-                      } else if (isFoundFilter.toLowerCase() === 'not-found') {
-                        if (!item.item_status) return item;
+                    .filter((ticket) => {
+                      if (isFoundFilter.toLowerCase() === 'new') {
+                        if (ticket.item_status === isFoundFilter) return ticket;
+                      } else if (
+                        isFoundFilter.toLowerCase() === 'in-progress'
+                      ) {
+                        if (ticket.item_status === isFoundFilter) return ticket;
+                      } else if (isFoundFilter.toLowerCase() === 'done') {
+                        if (ticket.item_status === isFoundFilter) return ticket;
                       } else {
-                        return item;
+                        return ticket;
                       }
                       return false;
                     })
-                    .map((item) => (
-                      <Link
-                        scroll={false}
-                        key={item.id}
-                        href={`/items/${item.id}`}
-                      >
-                        <a>
-                          <div className='flex flex-col text-left transition ease-in-out border h-fit rounded-3xl hover:scale-105 active:scale-95'>
-                            <div>
-                              <img
-                                className='w-full rounded-t-3xl '
-                                src='https://fakeimg.pl/400x200'
-                                alt='fake image thumbnail'
-                              />
-                            </div>
-                            <div className='flex flex-col h-full justify-evenly'>
-                              <div className='p-2'>
-                                <h1 className='font-bold'>{item.item_name}</h1>
-                              </div>
-                              <hr />
-                              <div className='p-2'>
-                                {item.status ? (
-                                  <p className='px-2 text-white bg-green-500 rounded-lg w-fit'>
-                                    Found
-                                  </p>
-                                ) : (
-                                  <div className='flex flex-row space-x-2'>
-                                    <p className='px-2 text-white bg-red-500 rounded-lg w-fit'>
-                                      Not Yet Found
-                                    </p>
-                                    <p className='px-2 text-white bg-yellow-500 rounded-lg h-ful w-fit'>
-                                      With Reward
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </a>
-                      </Link>
-                    ))}
+                    .map((item) => <TicketCard key={item.id} ticket={item} />)}
               </div>
             )}
           </div>
@@ -158,54 +141,37 @@ export default function Dashboard() {
       </div>
       {showAddModal && (
         <Modal
-          title='Add User'
+          title='Add Ticket'
           submitBtnText='Send Invite'
           shouldShow={showAddModal}
           onClose={handleShowAddModal}
         >
-          <div>First Name</div>
+          <div>Ticket Name</div>
           <div>
             <input
               type='text'
-              name='firstName'
               className='w-full p-2 border rounded'
+              onChange={(e) => setNewItemName(e.target.value)}
             />
           </div>
-          <div>Last Name</div>
+          <div>Ticket Description</div>
           <div>
             <input
               type='text'
-              name='lastName'
               className='w-full p-2 border rounded'
+              onChange={(e) => setNewItemDescription(e.target.value)}
             />
           </div>
-          <div>Email Address</div>
-          <div>
-            <input
-              type='email'
-              name='firstName'
-              className='w-full p-2 border rounded'
-            />
-          </div>
-          <div>
-            <input type='checkbox' name='isAdmin' className='border rounded' />
-            <label> Administrator</label>
+          <div className='pt-2'>
+            <button
+              onClick={handleAddTicket}
+              className='w-full p-2 text-base font-medium text-white bg-blue-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
+            >
+              Add
+            </button>
           </div>
         </Modal>
       )}
     </>
   );
 }
-
-const FETCH_ITEMS = gql`
-  query GetItems {
-    getItems {
-      id
-      owner
-      owner_number
-      item_name
-      item_description
-      item_status
-    }
-  }
-`;

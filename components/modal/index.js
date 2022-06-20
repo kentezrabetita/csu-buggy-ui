@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Blur from './blur';
 
-export default function Modal({
-  title,
-  submitBtnText,
-  children,
-  shouldShow,
-  onClose,
-}) {
+export default function Modal({ title, children, shouldShow, onClose }) {
   if (!shouldShow) {
     return null;
   }
@@ -19,18 +13,6 @@ export default function Modal({
         <h1 className='font-bold text-md'>{title}</h1>
         <div className='flex flex-col w-full mt-3 space-y-2 text-left'>
           {children}
-          <div>
-            <button
-              onClick={onClose}
-              className={
-                submitBtnText === 'Save'
-                  ? 'w-full p-2 text-base font-medium text-white bg-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
-                  : 'w-full p-2 text-base font-medium text-white bg-blue-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
-              }
-            >
-              {submitBtnText}
-            </button>
-          </div>
         </div>
       </div>
     </>
