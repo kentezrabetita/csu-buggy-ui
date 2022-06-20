@@ -1,8 +1,20 @@
-# task-tickets
+# tickets-board
 
-this projects serves as a requirement to our web applications and development subject.
+keep track of bugs and cracks! 🪲
 
-## features
+## Screenshots 📱
+
+TBA
+
+## About this app 📘
+
+this projects serves as a requirement to my web applications and development subject.
+
+## Inspiration 🔥
+
+TBA
+
+## Features and Functionalities 🖥️
 
 - ✅ create/add ticket
 - ✅ edit ticket details
@@ -11,10 +23,19 @@ this projects serves as a requirement to our web applications and development su
 - ✅ filters
 - ✅ search
 
-## tech stack
+## Project Experience 👷
+
+TBA
+
+## Tech Stack ⚒️
 
 - React.js
 - Next.js
-- Graphql
+- Express
+- GraphQL
 - Apollo Client
 - MySQL
+
+## Run Locally 🚀
+
+TBA
