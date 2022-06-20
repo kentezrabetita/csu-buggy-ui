@@ -27,7 +27,8 @@ export default function TicketCard({ ticket }) {
     refetchQueries: [{ query: GET_ITEMS }],
   });
 
-  const handleEditTicket = async () => {
+  const handleEditTicket = async (e) => {
+    e.preventDefault();
     await editTicket();
     setShowEditModal(!showEditModal);
   };
@@ -44,7 +45,7 @@ export default function TicketCard({ ticket }) {
           </div>
           <hr />
           <div className='p-2'>
-            <h1>{ticket.item_description}</h1>
+            <p className='break-words'>{ticket.item_description}</p>
           </div>
           <hr />
           <div className='flex flex-row justify-between p-2'>
@@ -79,53 +80,60 @@ export default function TicketCard({ ticket }) {
         </div>
       </div>
       {showEditModal && (
-        <div className='absolute z-10 h-screen'>
+        <div className='absolute h-screen'>
           <Modal
             title='Edit Ticket'
             submitBtnText='Save'
             shouldShow={showEditModal}
             onClose={handleShowEditModal}
           >
-            <div>Ticket Name</div>
-            <div>
-              <input
-                type='text'
-                name='firstName'
-                className='w-full p-2 border rounded'
-                value={newItemName}
-                onChange={(e) => setNewItemName(e.target.value)}
-              />
-            </div>
-            <div>Ticket Description</div>
-            <div>
-              <input
-                type='text'
-                name='lastName'
-                className='w-full p-2 border rounded'
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-              />
-            </div>
-            <div>Ticket Status</div>
-            <div>
-              <select
-                className='w-full p-2 border rounded'
-                value={newItemStatus}
-                onChange={(e) => setNewItemStatus(e.target.value)}
-              >
-                <option value='new'>New</option>
-                <option value='in-progress'>In Progress</option>
-                <option value='done'>Done</option>
-              </select>
-            </div>
-            <div>
-              <button
-                onClick={handleEditTicket}
-                className='w-full p-2 text-base font-medium text-white bg-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
-              >
-                Save
-              </button>
-            </div>
+            <form
+              onSubmit={handleEditTicket}
+              className='flex flex-col space-y-2'
+            >
+              <div className='flex flex-col space-y-2'>
+                <div>Ticket Name</div>
+                <div>
+                  <input
+                    required
+                    type='text'
+                    className='w-full p-2 border rounded'
+                    value={newItemName}
+                    onChange={(e) => setNewItemName(e.target.value)}
+                  />
+                </div>
+                <div>Ticket Description</div>
+                <div>
+                  <textarea
+                    required
+                    className='w-full p-2 border rounded'
+                    value={newItemDescription}
+                    onChange={(e) => setNewItemDescription(e.target.value)}
+                  />
+                </div>
+                <div>Ticket Status</div>
+                <div>
+                  <select
+                    required
+                    className='w-full p-2 border rounded'
+                    value={newItemStatus}
+                    onChange={(e) => setNewItemStatus(e.target.value)}
+                  >
+                    <option value='new'>New</option>
+                    <option value='in-progress'>In Progress</option>
+                    <option value='done'>Done</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <button
+                  type='submit'
+                  className='w-full p-2 text-base font-medium text-white bg-green-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
+                >
+                  Save
+                </button>
+              </div>
+            </form>
           </Modal>
         </div>
       )}

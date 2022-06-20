@@ -30,7 +30,8 @@ export default function Dashboard() {
     setShowAddModal(!showAddModal);
   };
 
-  const handleAddTicket = async () => {
+  const handleAddTicket = async (e) => {
+    e.preventDefault();
     await addTicket();
     setShowAddModal(!showAddModal);
   };
@@ -146,30 +147,34 @@ export default function Dashboard() {
           shouldShow={showAddModal}
           onClose={handleShowAddModal}
         >
-          <div>Ticket Name</div>
-          <div>
-            <input
-              type='text'
-              className='w-full p-2 border rounded'
-              onChange={(e) => setNewItemName(e.target.value)}
-            />
-          </div>
-          <div>Ticket Description</div>
-          <div>
-            <input
-              type='text'
-              className='w-full p-2 border rounded'
-              onChange={(e) => setNewItemDescription(e.target.value)}
-            />
-          </div>
-          <div className='pt-2'>
-            <button
-              onClick={handleAddTicket}
-              className='w-full p-2 text-base font-medium text-white bg-blue-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
-            >
-              Add
-            </button>
-          </div>
+          <form onSubmit={handleAddTicket}>
+            <div>Ticket Name</div>
+            <div>
+              <input
+                required
+                type='text'
+                className='w-full p-2 border rounded'
+                onChange={(e) => setNewItemName(e.target.value)}
+              />
+            </div>
+            <div>Ticket Description</div>
+            <div>
+              <textarea
+                required
+                type='text'
+                className='w-full p-2 border rounded'
+                onChange={(e) => setNewItemDescription(e.target.value)}
+              />
+            </div>
+            <div className='pt-2'>
+              <button
+                type='submit'
+                className='w-full p-2 text-base font-medium text-white bg-blue-500 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300'
+              >
+                Add
+              </button>
+            </div>
+          </form>
         </Modal>
       )}
     </>
