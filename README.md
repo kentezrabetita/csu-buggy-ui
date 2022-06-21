@@ -31,10 +31,8 @@ TBA
 
 - React.js
 - Next.js
-- Express
-- GraphQL
+- Tailwind CSS
 - Apollo Client
-- MySQL
 
 ## Run Locally 🚀
 
