@@ -16,7 +16,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: process.env.NEXT_PUBLIC_API_URL,
+  uri: process.env.API_URL,
   cache,
 });
 
