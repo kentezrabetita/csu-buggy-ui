@@ -1,4 +1,4 @@
-# tickets-board
+# buggy-board
 
 keep track of bugs and cracks! 🪲
 
