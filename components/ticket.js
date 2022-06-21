@@ -68,12 +68,18 @@ export default function TicketCard({ ticket }) {
             <div className='flex flex-row space-x-2'>
               <div className='flex items-center px-1 bg-green-500 rounded-lg'>
                 <button onClick={handleShowEditModal}>
-                  <img src='https://img.icons8.com/external-anggara-flat-anggara-putra/24/undefined/external-edit-user-interface-anggara-flat-anggara-putra.png' />
+                  <img
+                    alt='edit icon pencil'
+                    src='https://img.icons8.com/external-anggara-flat-anggara-putra/24/undefined/external-edit-user-interface-anggara-flat-anggara-putra.png'
+                  />
                 </button>
               </div>
               <div className='flex items-center px-1 bg-red-500 rounded-lg'>
                 <button onClick={deleteTicket}>
-                  <img src='https://img.icons8.com/external-flaticons-flat-flat-icons/24/undefined/external-delete-100-most-used-icons-flaticons-flat-flat-icons-2.png' />
+                  <img
+                    alt='delete icon trashcan garbage'
+                    src='https://img.icons8.com/external-flaticons-flat-flat-icons/24/undefined/external-delete-100-most-used-icons-flaticons-flat-flat-icons-2.png'
+                  />
                 </button>
               </div>
             </div>
