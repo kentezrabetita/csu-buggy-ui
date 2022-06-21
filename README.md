@@ -1,4 +1,4 @@
-# tickets-board
+# buggy-board
 
 keep track of bugs and cracks! 🪲
 
@@ -31,10 +31,8 @@ TBA
 
 - React.js
 - Next.js
-- Express
-- GraphQL
+- Tailwind CSS
 - Apollo Client
-- MySQL
 
 ## Run Locally 🚀
 
