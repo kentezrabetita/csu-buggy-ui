@@ -16,7 +16,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: 'https://buggy-graphql-api.herokuapp.com/',
+  uri: process.env.NEXT_PUBLIC_API_URL,
   cache,
 });
 
