@@ -4,6 +4,7 @@ import Modal from './modal';
 
 import { Grid } from 'react-loader-spinner';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import toast, { Toaster } from 'react-hot-toast';
 
 import { GET_ITEMS } from '../graphql/queries/ticket';
 import { ADD_ITEM } from '../graphql/mutations/ticket';
@@ -30,9 +31,14 @@ export default function Dashboard() {
     setShowAddModal(!showAddModal);
   };
 
-  const handleAddTicket = async (e) => {
+  const handleAddTicket = (e) => {
     e.preventDefault();
-    await addTicket();
+    const promise = addTicket();
+    toast.promise(promise, {
+      loading: 'Adding ticket...',
+      success: 'Ticket Successfully Added!',
+      error: 'There was an Error!',
+    });
     setShowAddModal(!showAddModal);
   };
 
@@ -40,6 +46,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <Toaster />
       <div className='container p-6 mx-auto'>
         <div className='flex flex-col items-center justify-center space-y-6'>
           <div className='w-full'>

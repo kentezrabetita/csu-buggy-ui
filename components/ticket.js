@@ -4,6 +4,7 @@ import Modal from './modal';
 import { useMutation } from '@apollo/client';
 import { GET_ITEMS } from '../graphql/queries/ticket';
 import { DELETE_ITEM, EDIT_ITEM } from '../graphql/mutations/ticket';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function TicketCard({ ticket }) {
   const [showEditModal, setShowEditModal] = useState(false);
@@ -28,9 +29,24 @@ export default function TicketCard({ ticket }) {
     refetchQueries: [{ query: GET_ITEMS }],
   });
 
-  const handleEditTicket = async (e) => {
+  const handleDeleteTicket = (e) => {
     e.preventDefault();
-    await editTicket();
+    const promise = deleteTicket();
+    toast.promise(promise, {
+      loading: 'Deleting ticket...',
+      success: 'Ticket Successfully Deleted!',
+      error: 'There was an Error!',
+    });
+  };
+
+  const handleEditTicket = (e) => {
+    e.preventDefault();
+    const promise = editTicket();
+    toast.promise(promise, {
+      loading: 'Updating ticket...',
+      success: 'Ticket Successfully Updated!',
+      error: 'There was an Error!',
+    });
     setShowEditModal(!showEditModal);
   };
 
@@ -75,7 +91,7 @@ export default function TicketCard({ ticket }) {
                 </button>
               </div>
               <div className='flex items-center px-1 bg-red-500 rounded-lg'>
-                <button onClick={deleteTicket}>
+                <button onClick={handleDeleteTicket}>
                   <img
                     alt='delete icon trashcan garbage'
                     src='https://img.icons8.com/external-flaticons-flat-flat-icons/24/undefined/external-delete-100-most-used-icons-flaticons-flat-flat-icons-2.png'
